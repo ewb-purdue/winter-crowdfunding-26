@@ -76,6 +76,15 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
 .clear svg { width: 16px; height: 16px; }
 .clear:hover { color: var(--ink); }
 
+.match {
+  margin-top: 16px; padding: 14px 16px 14px 18px;
+  background: var(--blue-tint); border: 1px solid var(--blue-light);
+  border-left: 4px solid var(--gold); border-radius: 10px;
+  font-size: 15px; color: var(--ink);
+}
+.match p { margin: 0; }
+.match .match-title { margin-bottom: 3px; font-weight: 700; color: var(--blue-dark); }
+
 .status { margin: 16px 4px 0; font-size: 14px; color: var(--muted); min-height: 1.45em; }
 
 .group-title {

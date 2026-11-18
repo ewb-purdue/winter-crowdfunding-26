@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'sha256-jNZLOWU1qi22YWeScs9sp8uh09XSB4bPNwOf4y58vUE='; script-src 'sha256-3EgtGn7bAhXztODYecZ9XK70cSA/Ck18gpoQx0CoJGI='; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'sha256-5LJuaXjYCU3Y3mwWpVjG5LfKQNF3E5imrKwULNLqzmk='; script-src 'sha256-3EgtGn7bAhXztODYecZ9XK70cSA/Ck18gpoQx0CoJGI='; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noindex, nofollow">
 <title>Winter 2026 Crowdfunding | EWB Purdue</title>
@@ -96,6 +96,15 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
 }
 .clear svg { width: 16px; height: 16px; }
 .clear:hover { color: var(--ink); }
+
+.match {
+  margin-top: 16px; padding: 14px 16px 14px 18px;
+  background: var(--blue-tint); border: 1px solid var(--blue-light);
+  border-left: 4px solid var(--gold); border-radius: 10px;
+  font-size: 15px; color: var(--ink);
+}
+.match p { margin: 0; }
+.match .match-title { margin-bottom: 3px; font-weight: 700; color: var(--blue-dark); }
 
 .status { margin: 16px 4px 0; font-size: 14px; color: var(--muted); min-height: 1.45em; }
 
@@ -203,6 +212,11 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
       <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 8.6 4.6-4.6 1.4 1.4-4.6 4.6 4.6 4.6-1.4 1.4-4.6-4.6-4.6 4.6-1.4-1.4 4.6-4.6-4.6-4.6 1.4-1.4z" fill="currentColor"/></svg>
     </button>
   </div>
+
+  <aside class="match" aria-labelledby="match-title">
+    <p class="match-title" id="match-title">Does your employer match gifts?</p>
+    <p>Many companies match donations, which can double or triple your gift. Check with your HR team after you give.</p>
+  </aside>
 
   <p class="status" id="status" aria-live="polite"></p>
   <div id="results"></div>
