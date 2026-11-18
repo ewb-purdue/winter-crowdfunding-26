@@ -182,7 +182,7 @@ a.member:hover .donate { background: var(--blue-dark); }
 
 footer.site { margin-top: 36px; padding: 26px 0 40px; border-top: 1px solid var(--line); text-align: center; font-size: 15px; color: var(--muted); }
 footer.site p { margin: 0 0 6px; }
-footer.site a { color: var(--blue); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+footer.site a { color: var(--blue); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
 footer.site .fine { margin-top: 14px; font-size: 13px; }
 
 @media (min-width: 720px) {
