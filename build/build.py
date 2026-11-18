@@ -68,12 +68,12 @@ def main():
     csv_path, assets, out = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
     members = load_members(csv_path)
 
-    style = (HERE / "style.css").read_text()
+    style = (HERE / "style.css").read_text(encoding="utf-8")
     members_js = json.dumps(members, ensure_ascii=False).replace("</", "<\\/")
-    script = (HERE / "app.js").read_text()
+    script = (HERE / "app.js").read_text(encoding="utf-8")
     script = script.replace("__MEMBERS__", members_js).replace("__TEAM_ORDER__", json.dumps(TEAM_ORDER))
 
-    html = (HERE / "template.html").read_text()
+    html = (HERE / "template.html").read_text(encoding="utf-8")
     replacements = {
         "__STYLE_HASH__": sha256(style),
         "__SCRIPT_HASH__": sha256(script),
