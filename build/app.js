@@ -121,10 +121,14 @@
     return k === -1 ? TEAM_ORDER.length : k;
   }
 
+  var poolOpen = true;
+
   function renderAll() {
     var groups = {};
     var names = [];
+    var pool = [];
     for (var j = 0; j < people.length; j++) {
+      if (!people[j].url) { pool.push(people[j]); continue; }
       var t = people[j].team || "Members";
       if (!groups[t]) { groups[t] = []; names.push(t); }
       groups[t].push(people[j]);
@@ -138,9 +142,37 @@
       frag.appendChild(h);
       frag.appendChild(list(groups[names[k]]));
     }
+    if (pool.length) {
+      // Everyone without a page: one A to Z list at the bottom, team shown under each name.
+      var head = document.createElement("div");
+      head.className = "pool-head";
+      var ph = document.createElement("h2");
+      ph.className = "group-title";
+      ph.textContent = "No page yet";
+      var tog = document.createElement("button");
+      tog.type = "button";
+      tog.className = "pool-toggle";
+      tog.setAttribute("aria-controls", "pool");
+      var poolList = list(pool);
+      poolList.id = "pool";
+      poolList.classList.add("list-pool");
+      var setPool = function () {
+        poolList.hidden = !poolOpen;
+        tog.setAttribute("aria-expanded", String(poolOpen));
+        tog.textContent = poolOpen ? "Hide" : "Show " + pool.length + (pool.length === 1 ? " member" : " members");
+      };
+      tog.addEventListener("click", function () { poolOpen = !poolOpen; setPool(); });
+      setPool();
+      head.appendChild(ph);
+      head.appendChild(tog);
+      frag.appendChild(head);
+      frag.appendChild(poolList);
+    }
     results.className = "results-grouped";
     results.replaceChildren(frag);
-    statusEl.textContent = people.length + (people.length === 1 ? " member" : " members");
+    var withPage = people.length - pool.length;
+    statusEl.textContent = people.length + (people.length === 1 ? " member, " : " members, ") +
+      withPage + (withPage === 1 ? " with a donation page" : " with donation pages");
   }
 
   function score(p, terms) {
@@ -176,7 +208,10 @@
       var s = score(people[j], terms);
       if (s) hits.push({ p: people[j], s: s });
     }
-    hits.sort(function (a, b) { return b.s - a.s || (a.p.key < b.p.key ? -1 : 1); });
+    // Members with a page first, then best match, then A to Z.
+    hits.sort(function (a, b) {
+      return (b.p.url ? 1 : 0) - (a.p.url ? 1 : 0) || b.s - a.s || (a.p.key < b.p.key ? -1 : 1);
+    });
     shown = hits.map(function (h) { return h.p; });
 
     if (!shown.length) {

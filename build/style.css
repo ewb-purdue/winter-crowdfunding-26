@@ -91,6 +91,15 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
   margin: 22px 4px 8px; font-size: 13px; font-weight: 700;
   letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
 }
+.pool-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 34px; }
+.pool-head .group-title { margin-top: 0; }
+.pool-toggle {
+  flex: none; margin: 0 0 4px; padding: 4px 4px;
+  border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 14px; font-weight: 700; color: var(--blue);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.pool-toggle:focus-visible { outline: 3px solid rgba(9, 90, 166, 0.45); outline-offset: 2px; border-radius: 4px; }
 .list {
   list-style: none; margin: 0; padding: 0;
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
@@ -119,6 +128,7 @@ a.member:hover { background: var(--blue-tint); }
 .name { display: block; font-size: 17px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
 .team { display: block; margin-top: 2px; font-size: 14px; line-height: 1.3; color: var(--muted); }
 .results-grouped .team { display: none; }
+.results-grouped .list-pool .team { display: block; }
 .donate {
   flex: none; display: inline-flex; align-items: center; gap: 6px;
   padding: 9px 14px 9px 16px; border-radius: 999px;

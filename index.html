@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'sha256-sWy9R1cU41tNt1EYspX2dDLTb4eDNaAolz20h4p6jZs='; script-src 'sha256-QsIxrw8neaQOVyldylKFiaCI27GpkUA82upjfgT0/lI='; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'sha256-WDELpxGWCy8/FOWzDh61IMuv6Mhi2k7ezJW1V00QcnQ='; script-src 'sha256-DHbJ0iA7j9YSWZOpAoDTd/xhzNRb4ykOB5ZdvPqg0jI='; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noindex, nofollow">
 <title>Winter 2026 Crowdfunding | EWB Purdue</title>
@@ -112,6 +112,15 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
   margin: 22px 4px 8px; font-size: 13px; font-weight: 700;
   letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
 }
+.pool-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 34px; }
+.pool-head .group-title { margin-top: 0; }
+.pool-toggle {
+  flex: none; margin: 0 0 4px; padding: 4px 4px;
+  border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 14px; font-weight: 700; color: var(--blue);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.pool-toggle:focus-visible { outline: 3px solid rgba(9, 90, 166, 0.45); outline-offset: 2px; border-radius: 4px; }
 .list {
   list-style: none; margin: 0; padding: 0;
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
@@ -140,6 +149,7 @@ a.member:hover { background: var(--blue-tint); }
 .name { display: block; font-size: 17px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
 .team { display: block; margin-top: 2px; font-size: 14px; line-height: 1.3; color: var(--muted); }
 .results-grouped .team { display: none; }
+.results-grouped .list-pool .team { display: block; }
 .donate {
   flex: none; display: inline-flex; align-items: center; gap: 6px;
   padding: 9px 14px 9px 16px; border-radius: 999px;
@@ -391,10 +401,14 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
     return k === -1 ? TEAM_ORDER.length : k;
   }
 
+  var poolOpen = true;
+
   function renderAll() {
     var groups = {};
     var names = [];
+    var pool = [];
     for (var j = 0; j < people.length; j++) {
+      if (!people[j].url) { pool.push(people[j]); continue; }
       var t = people[j].team || "Members";
       if (!groups[t]) { groups[t] = []; names.push(t); }
       groups[t].push(people[j]);
@@ -408,9 +422,37 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
       frag.appendChild(h);
       frag.appendChild(list(groups[names[k]]));
     }
+    if (pool.length) {
+      // Everyone without a page: one A to Z list at the bottom, team shown under each name.
+      var head = document.createElement("div");
+      head.className = "pool-head";
+      var ph = document.createElement("h2");
+      ph.className = "group-title";
+      ph.textContent = "No page yet";
+      var tog = document.createElement("button");
+      tog.type = "button";
+      tog.className = "pool-toggle";
+      tog.setAttribute("aria-controls", "pool");
+      var poolList = list(pool);
+      poolList.id = "pool";
+      poolList.classList.add("list-pool");
+      var setPool = function () {
+        poolList.hidden = !poolOpen;
+        tog.setAttribute("aria-expanded", String(poolOpen));
+        tog.textContent = poolOpen ? "Hide" : "Show " + pool.length + (pool.length === 1 ? " member" : " members");
+      };
+      tog.addEventListener("click", function () { poolOpen = !poolOpen; setPool(); });
+      setPool();
+      head.appendChild(ph);
+      head.appendChild(tog);
+      frag.appendChild(head);
+      frag.appendChild(poolList);
+    }
     results.className = "results-grouped";
     results.replaceChildren(frag);
-    statusEl.textContent = people.length + (people.length === 1 ? " member" : " members");
+    var withPage = people.length - pool.length;
+    statusEl.textContent = people.length + (people.length === 1 ? " member, " : " members, ") +
+      withPage + (withPage === 1 ? " with a donation page" : " with donation pages");
   }
 
   function score(p, terms) {
@@ -446,7 +488,10 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
       var s = score(people[j], terms);
       if (s) hits.push({ p: people[j], s: s });
     }
-    hits.sort(function (a, b) { return b.s - a.s || (a.p.key < b.p.key ? -1 : 1); });
+    // Members with a page first, then best match, then A to Z.
+    hits.sort(function (a, b) {
+      return (b.p.url ? 1 : 0) - (a.p.url ? 1 : 0) || b.s - a.s || (a.p.key < b.p.key ? -1 : 1);
+    });
     shown = hits.map(function (h) { return h.p; });
 
     if (!shown.length) {
