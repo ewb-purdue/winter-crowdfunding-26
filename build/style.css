@@ -132,7 +132,7 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
 footer.site { margin-top: 36px; padding: 26px 0 40px; border-top: 1px solid var(--line); text-align: center; font-size: 15px; color: var(--muted); }
 footer.site p { margin: 0 0 6px; }
 footer.site a { color: var(--blue); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
-footer.site .fine { font-size: 13px; }
+footer.site .fine { margin-top: 14px; font-size: 13px; }
 
 @media (min-width: 720px) {
   header.site .wrap { padding-top: 18px; padding-bottom: 18px; }
