@@ -14,6 +14,7 @@ Donors land here after the Mailchimp form (mailchi.mp/purdue/ewb-winter26), sear
 | `build/build.py` | Builds `index.html` from `members.csv`. Stops on any bad row. |
 | `build/template.html`, `style.css`, `app.js` | Page markup, styles, and search code. |
 | `build/assets/` | Original EWB logos. |
+| `previews/` | Link-preview drafts, numbered by version, for comparing designs. Not used by the site. |
 | `build/assets_out/` | Processed logo, icons, and preview image (made by `prep_assets.py`, needs Pillow). |
 
 ## Build
