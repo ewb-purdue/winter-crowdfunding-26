@@ -14,7 +14,8 @@
   var people = [];
   for (var i = 0; i < MEMBERS.length; i++) {
     var m = MEMBERS[i];
-    if (!m || typeof m.name !== "string" || typeof m.url !== "string" || !LINK_OK.test(m.url)) continue;
+    if (!m || typeof m.name !== "string" || typeof m.url !== "string") continue;
+    if (m.url && !LINK_OK.test(m.url)) continue;
     var key = norm(m.name);
     people.push({ name: m.name, team: String(m.team || ""), url: m.url, key: key, words: key.split(" ") });
   }
@@ -42,13 +43,22 @@
 
   var arrow = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3h8v8h-2V6.4l-6.3 6.3-1.4-1.4L9.6 5H5z" fill="currentColor"/></svg>';
 
+  var tipCount = 0;
+
   function row(p) {
     var li = document.createElement("li");
-    var a = document.createElement("a");
-    a.className = "member";
-    a.href = p.url;
-    a.rel = "noopener";
-    a.setAttribute("aria-label", "Donate to " + p.name + (p.team ? ", " + p.team : "") + ", opens their Engineers Without Borders USA page");
+    var a;
+    if (p.url) {
+      a = document.createElement("a");
+      a.className = "member";
+      a.href = p.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.setAttribute("aria-label", "Donate to " + p.name + (p.team ? ", " + p.team : "") + ", opens their Engineers Without Borders USA page in a new tab");
+    } else {
+      a = document.createElement("div");
+      a.className = "member no-page";
+    }
 
     var av = document.createElement("span");
     av.className = "avatar";
@@ -66,11 +76,31 @@
     who.appendChild(nm);
     who.appendChild(tm);
 
-    var btn = document.createElement("span");
-    btn.className = "donate";
-    btn.setAttribute("aria-hidden", "true");
-    btn.textContent = "Donate";
-    btn.insertAdjacentHTML("beforeend", arrow);
+    var btn;
+    if (p.url) {
+      btn = document.createElement("span");
+      btn.className = "donate";
+      btn.setAttribute("aria-hidden", "true");
+      btn.textContent = "Donate";
+      btn.insertAdjacentHTML("beforeend", arrow);
+    } else {
+      btn = document.createElement("span");
+      btn.className = "donate-wrap";
+      var off = document.createElement("button");
+      off.type = "button";
+      off.className = "donate donate-off";
+      off.setAttribute("aria-disabled", "true");
+      off.setAttribute("aria-label", "Donate to " + p.name + ", unavailable");
+      off.textContent = "Donate";
+      var tip = document.createElement("span");
+      tip.className = "tip";
+      tip.id = "tip-" + (++tipCount);
+      tip.setAttribute("role", "tooltip");
+      tip.textContent = p.name.split(" ")[0] + " hasn’t set up a personal crowdfunding page yet.";
+      off.setAttribute("aria-describedby", tip.id);
+      btn.appendChild(off);
+      btn.appendChild(tip);
+    }
 
     a.appendChild(av);
     a.appendChild(who);
@@ -166,12 +196,26 @@
   input.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (shown.length === 1 && input.value.trim()) window.location.href = shown[0].url;
+      if (shown.length === 1 && shown[0].url && input.value.trim()) window.open(shown[0].url, "_blank", "noopener");
     } else if (e.key === "Escape") {
       input.value = "";
       update();
     }
   });
+  // Greyed-out rows: tap or click shows the "no page yet" note (hover covers mouse users).
+  function closeTips(except) {
+    var open = results.querySelectorAll(".tip-open");
+    for (var j = 0; j < open.length; j++) if (open[j] !== except) open[j].classList.remove("tip-open");
+  }
+  document.addEventListener("click", function (e) {
+    var r = e.target.closest ? e.target.closest(".no-page") : null;
+    closeTips(r);
+    if (r) r.classList.toggle("tip-open");
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeTips(null);
+  });
+
   clearBtn.addEventListener("click", function () {
     input.value = "";
     update();

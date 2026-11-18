@@ -10,7 +10,7 @@ Donors land here after the Mailchimp form (mailchi.mp/purdue/ewb-winter26), sear
 | --- | --- |
 | `index.html`, `preview.png` | The live site (built output). GitHub Pages serves these from the repo root. |
 | `build/members.csv` | Members on the page: `name,team,url`. The only file to edit for updates. |
-| `build/roster.csv` | All 68 members and their teams, from the design meeting attendance sheet. Used to check who is missing. |
+| `build/roster.csv` | All 68 members and their teams, from the design meeting attendance sheet. Everyone here who isn't in `members.csv` is still listed, with a greyed-out Donate button and a "no page yet" note. |
 | `build/build.py` | Builds `index.html` from `members.csv`. Stops on any bad row. |
 | `build/template.html`, `style.css`, `app.js` | Page markup, styles, and search code. |
 | `build/assets/` | Original EWB logos. |
@@ -31,6 +31,7 @@ Then commit `index.html` (and `preview.png` the first time). The site updates wi
 - Every link must be `https://support.ewb-usa.org/fundraiser/<digits>`
 - No duplicate links or names
 - Team must be one of the teams in `TEAM_ORDER` in `build.py`
+- Same team rule and no duplicates for `roster.csv`
 
 ## Checking member pages
 

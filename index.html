@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'sha256-5LJuaXjYCU3Y3mwWpVjG5LfKQNF3E5imrKwULNLqzmk='; script-src 'sha256-3EgtGn7bAhXztODYecZ9XK70cSA/Ck18gpoQx0CoJGI='; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'sha256-sWy9R1cU41tNt1EYspX2dDLTb4eDNaAolz20h4p6jZs='; script-src 'sha256-QsIxrw8neaQOVyldylKFiaCI27GpkUA82upjfgT0/lI='; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noindex, nofollow">
 <title>Winter 2026 Crowdfunding | EWB Purdue</title>
@@ -114,7 +114,7 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
 }
 .list {
   list-style: none; margin: 0; padding: 0;
-  background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
 }
 .results-flat .list { margin-top: 12px; }
 .list li + li { border-top: 1px solid var(--line); }
@@ -124,7 +124,10 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
   color: inherit; text-decoration: none;
   transition: background-color 0.12s ease;
 }
-.member:hover { background: var(--blue-tint); }
+.list li:first-child .member { border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
+.list li:last-child .member { border-bottom-left-radius: calc(var(--radius) - 1px); border-bottom-right-radius: calc(var(--radius) - 1px); }
+.list li:only-child .member { border-radius: calc(var(--radius) - 1px); }
+a.member:hover { background: var(--blue-tint); }
 .member:focus-visible { outline: 3px solid rgba(9, 90, 166, 0.45); outline-offset: -3px; background: var(--blue-tint); }
 .avatar {
   flex: none; width: 42px; height: 42px; border-radius: 50%;
@@ -144,7 +147,36 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
   transition: background-color 0.12s ease;
 }
 .donate svg { width: 14px; height: 14px; }
-.member:hover .donate { background: var(--blue-dark); }
+a.member:hover .donate { background: var(--blue-dark); }
+
+.no-page { cursor: default; }
+.no-page .avatar { background: var(--bg); color: var(--muted); border-color: var(--line); }
+.donate-wrap { position: relative; flex: none; }
+.donate-off {
+  border: 0; font-family: inherit; line-height: inherit; cursor: help;
+  background: #e4e8ed; color: #6b7480;
+}
+.donate-off:focus-visible { outline: 3px solid rgba(9, 90, 166, 0.45); outline-offset: 2px; }
+.tip {
+  position: absolute; right: 0; bottom: calc(100% + 10px); z-index: 2;
+  width: max-content; max-width: min(240px, 70vw);
+  padding: 9px 12px; border-radius: 8px;
+  background: var(--ink); color: #fff;
+  font-size: 13px; font-weight: 400; line-height: 1.35; text-align: left;
+  box-shadow: 0 6px 18px rgba(6, 38, 77, 0.22);
+  opacity: 0; visibility: hidden; transform: translateY(4px);
+  transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s;
+  pointer-events: none;
+}
+.tip::after {
+  content: ""; position: absolute; right: 26px; top: 100%;
+  border: 6px solid transparent; border-top-color: var(--ink);
+}
+.donate-off:focus-visible + .tip,
+.tip-open .tip { opacity: 1; visibility: visible; transform: none; }
+@media (hover: hover) {
+  .donate-wrap:hover .tip { opacity: 1; visibility: visible; transform: none; }
+}
 
 .empty {
   margin-top: 12px; padding: 26px 22px; text-align: center;
@@ -224,13 +256,13 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
   <div class="empty" id="empty" hidden>
     <p class="empty-title">No member matches &ldquo;<span id="empty-q"></span>&rdquo;</p>
     <p>Check the spelling, or give to the whole team instead.</p>
-    <a class="btn-outline" href="https://support.ewb-usa.org/team/866091">Donate to the team</a>
+    <a class="btn-outline" href="https://support.ewb-usa.org/team/866091" target="_blank" rel="noopener">Donate to the team</a>
   </div>
 </main>
 
 <footer class="site">
   <div class="wrap">
-    <p>Can&rsquo;t find who you&rsquo;re looking for? <a href="https://support.ewb-usa.org/team/866091">Donate to the Winter 2026 team</a></p>
+    <p>Can&rsquo;t find who you&rsquo;re looking for? <a href="https://support.ewb-usa.org/team/866091" target="_blank" rel="noopener">Visit our team page</a></p>
     <p>Questions? Email <a href="mailto:ewb@purdue.edu">ewb@purdue.edu</a></p>
     <p class="fine">Donations are processed by Engineers Without Borders USA.</p>
   </div>
@@ -239,7 +271,7 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
 <script>(function () {
   "use strict";
 
-  var MEMBERS = [{"name": "Keira Keegan", "team": "Fundraising", "url": "https://support.ewb-usa.org/fundraiser/7727551"}, {"name": "Sophie Hua", "team": "Corporate Outreach and Stewardship", "url": "https://support.ewb-usa.org/fundraiser/7727565"}, {"name": "Ryan Jin", "team": "Alumni and Individual Outreach", "url": "https://support.ewb-usa.org/fundraiser/7729284"}];
+  var MEMBERS = [{"name": "Keira Keegan", "team": "Fundraising", "url": "https://support.ewb-usa.org/fundraiser/7727551"}, {"name": "Sophie Hua", "team": "Corporate Outreach and Stewardship", "url": "https://support.ewb-usa.org/fundraiser/7727565"}, {"name": "Ryan Jin", "team": "Alumni and Individual Outreach", "url": "https://support.ewb-usa.org/fundraiser/7729284"}, {"name": "Eryk Chazares", "team": "Leadership", "url": ""}, {"name": "Will Dowton", "team": "Leadership", "url": ""}, {"name": "Abby Heppelmann", "team": "Leadership", "url": ""}, {"name": "Sidney Bauer", "team": "Rwanda", "url": ""}, {"name": "Rachel Schwab", "team": "Rwanda", "url": ""}, {"name": "Anita Dinakar", "team": "Leadership", "url": ""}, {"name": "Shreya Ranganathan", "team": "Leadership", "url": ""}, {"name": "Clara de Groot", "team": "Fundraising", "url": ""}, {"name": "Pranay Gohel", "team": "Louisiana", "url": ""}, {"name": "Connor Taylor", "team": "Louisiana", "url": ""}, {"name": "Anneka Girish", "team": "Health", "url": ""}, {"name": "Elle Case", "team": "Rwanda Water", "url": ""}, {"name": "Ryan Brown", "team": "Rwanda Water", "url": ""}, {"name": "Molly Dennis", "team": "Rwanda Water", "url": ""}, {"name": "Nicolas Bustamente", "team": "Rwanda Water", "url": ""}, {"name": "Sarah Frazier", "team": "Rwanda Water", "url": ""}, {"name": "David Taranowski", "team": "Rwanda Water", "url": ""}, {"name": "Olivia May", "team": "Rwanda Water", "url": ""}, {"name": "Jackson Russell", "team": "Rwanda Water", "url": ""}, {"name": "Kathryn Feller", "team": "Rwanda Water", "url": ""}, {"name": "Gautam Nambiar", "team": "Rwanda Water", "url": ""}, {"name": "Elliot Bloom", "team": "Rwanda Structures", "url": ""}, {"name": "Serena Wei", "team": "Rwanda Structures", "url": ""}, {"name": "Linda Zheng", "team": "Rwanda Structures", "url": ""}, {"name": "Luke Petrucci", "team": "Rwanda Structures", "url": ""}, {"name": "Sanah Arya", "team": "Rwanda Structures", "url": ""}, {"name": "Ariella Nelson", "team": "Rwanda Structures", "url": ""}, {"name": "Noopura Nambiar", "team": "Rwanda Structures", "url": ""}, {"name": "Keaton Chew", "team": "Rwanda Structures", "url": ""}, {"name": "Cali Tyler", "team": "Rwanda Structures", "url": ""}, {"name": "Trevor Fisher", "team": "Rwanda Structures", "url": ""}, {"name": "Mydhili Krishnan", "team": "Rwanda Operations", "url": ""}, {"name": "Isabel Lubia", "team": "Rwanda Operations", "url": ""}, {"name": "Mallory Kuntz", "team": "Rwanda Operations", "url": ""}, {"name": "Ava Britton-Heitz", "team": "Rwanda Operations", "url": ""}, {"name": "Divya Senthurchelvan", "team": "Rwanda Operations", "url": ""}, {"name": "Maria Kufahl", "team": "Louisiana Long-Term", "url": ""}, {"name": "Jake Fisher", "team": "Louisiana Long-Term", "url": ""}, {"name": "Ava Valerius", "team": "Louisiana Long-Term", "url": ""}, {"name": "Camila Mendoza", "team": "Louisiana Long-Term", "url": ""}, {"name": "Seth Berg", "team": "Louisiana Long-Term", "url": ""}, {"name": "Risha Gupta", "team": "Louisiana Short-Term", "url": ""}, {"name": "Eleanor Sparks", "team": "Louisiana Short-Term", "url": ""}, {"name": "Nadira Balasundaram", "team": "Louisiana Short-Term", "url": ""}, {"name": "Gabby Loi", "team": "Louisiana Short-Term", "url": ""}, {"name": "Aditi Bhatia", "team": "Louisiana Short-Term", "url": ""}, {"name": "Gernie Galvan", "team": "Health", "url": ""}, {"name": "Vedant Rathi", "team": "Health", "url": ""}, {"name": "Alex Kim", "team": "Health", "url": ""}, {"name": "Apsara Vimalarajah", "team": "Health", "url": ""}, {"name": "Cian McClamroch", "team": "Health", "url": ""}, {"name": "Isnhara Durocher", "team": "Health", "url": ""}, {"name": "Rebecca Phelan", "team": "Health", "url": ""}, {"name": "Elsa Thomas", "team": "Health", "url": ""}, {"name": "Mallika Subramanian", "team": "Health", "url": ""}, {"name": "Mirko Glavan", "team": "Grants", "url": ""}, {"name": "Emily Creekmore", "team": "Grants", "url": ""}, {"name": "Gavin Peterson", "team": "Grants", "url": ""}, {"name": "Leon Francis", "team": "Grants", "url": ""}, {"name": "Mithali Obadage", "team": "Grants", "url": ""}, {"name": "Lily Fix", "team": "Grants", "url": ""}, {"name": "Sam Paul", "team": "Corporate Outreach and Stewardship", "url": ""}, {"name": "Jacob Peruski", "team": "Corporate Outreach and Stewardship", "url": ""}, {"name": "Ella Meyer", "team": "Alumni and Individual Outreach", "url": ""}, {"name": "Cece Goracki", "team": "Marketing", "url": ""}];
   var TEAM_ORDER = ["Leadership", "Fundraising", "Rwanda", "Rwanda Water", "Rwanda Structures", "Rwanda Operations", "Louisiana", "Louisiana Long-Term", "Louisiana Short-Term", "Health", "Grants", "Corporate Outreach and Stewardship", "Alumni and Individual Outreach", "Marketing"];
   var LINK_OK = /^https:\/\/support\.ewb-usa\.org\/fundraiser\/[0-9]{1,12}$/;
 
@@ -252,7 +284,8 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
   var people = [];
   for (var i = 0; i < MEMBERS.length; i++) {
     var m = MEMBERS[i];
-    if (!m || typeof m.name !== "string" || typeof m.url !== "string" || !LINK_OK.test(m.url)) continue;
+    if (!m || typeof m.name !== "string" || typeof m.url !== "string") continue;
+    if (m.url && !LINK_OK.test(m.url)) continue;
     var key = norm(m.name);
     people.push({ name: m.name, team: String(m.team || ""), url: m.url, key: key, words: key.split(" ") });
   }
@@ -280,13 +313,22 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
 
   var arrow = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3h8v8h-2V6.4l-6.3 6.3-1.4-1.4L9.6 5H5z" fill="currentColor"/></svg>';
 
+  var tipCount = 0;
+
   function row(p) {
     var li = document.createElement("li");
-    var a = document.createElement("a");
-    a.className = "member";
-    a.href = p.url;
-    a.rel = "noopener";
-    a.setAttribute("aria-label", "Donate to " + p.name + (p.team ? ", " + p.team : "") + ", opens their Engineers Without Borders USA page");
+    var a;
+    if (p.url) {
+      a = document.createElement("a");
+      a.className = "member";
+      a.href = p.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.setAttribute("aria-label", "Donate to " + p.name + (p.team ? ", " + p.team : "") + ", opens their Engineers Without Borders USA page in a new tab");
+    } else {
+      a = document.createElement("div");
+      a.className = "member no-page";
+    }
 
     var av = document.createElement("span");
     av.className = "avatar";
@@ -304,11 +346,31 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
     who.appendChild(nm);
     who.appendChild(tm);
 
-    var btn = document.createElement("span");
-    btn.className = "donate";
-    btn.setAttribute("aria-hidden", "true");
-    btn.textContent = "Donate";
-    btn.insertAdjacentHTML("beforeend", arrow);
+    var btn;
+    if (p.url) {
+      btn = document.createElement("span");
+      btn.className = "donate";
+      btn.setAttribute("aria-hidden", "true");
+      btn.textContent = "Donate";
+      btn.insertAdjacentHTML("beforeend", arrow);
+    } else {
+      btn = document.createElement("span");
+      btn.className = "donate-wrap";
+      var off = document.createElement("button");
+      off.type = "button";
+      off.className = "donate donate-off";
+      off.setAttribute("aria-disabled", "true");
+      off.setAttribute("aria-label", "Donate to " + p.name + ", unavailable");
+      off.textContent = "Donate";
+      var tip = document.createElement("span");
+      tip.className = "tip";
+      tip.id = "tip-" + (++tipCount);
+      tip.setAttribute("role", "tooltip");
+      tip.textContent = p.name.split(" ")[0] + " hasn’t set up a personal crowdfunding page yet.";
+      off.setAttribute("aria-describedby", tip.id);
+      btn.appendChild(off);
+      btn.appendChild(tip);
+    }
 
     a.appendChild(av);
     a.appendChild(who);
@@ -404,12 +466,26 @@ footer.site .fine { margin-top: 14px; font-size: 13px; }
   input.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (shown.length === 1 && input.value.trim()) window.location.href = shown[0].url;
+      if (shown.length === 1 && shown[0].url && input.value.trim()) window.open(shown[0].url, "_blank", "noopener");
     } else if (e.key === "Escape") {
       input.value = "";
       update();
     }
   });
+  // Greyed-out rows: tap or click shows the "no page yet" note (hover covers mouse users).
+  function closeTips(except) {
+    var open = results.querySelectorAll(".tip-open");
+    for (var j = 0; j < open.length; j++) if (open[j] !== except) open[j].classList.remove("tip-open");
+  }
+  document.addEventListener("click", function (e) {
+    var r = e.target.closest ? e.target.closest(".no-page") : null;
+    closeTips(r);
+    if (r) r.classList.toggle("tip-open");
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeTips(null);
+  });
+
   clearBtn.addEventListener("click", function () {
     input.value = "";
     update();

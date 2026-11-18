@@ -93,7 +93,7 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
 }
 .list {
   list-style: none; margin: 0; padding: 0;
-  background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
 }
 .results-flat .list { margin-top: 12px; }
 .list li + li { border-top: 1px solid var(--line); }
@@ -103,7 +103,10 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
   color: inherit; text-decoration: none;
   transition: background-color 0.12s ease;
 }
-.member:hover { background: var(--blue-tint); }
+.list li:first-child .member { border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
+.list li:last-child .member { border-bottom-left-radius: calc(var(--radius) - 1px); border-bottom-right-radius: calc(var(--radius) - 1px); }
+.list li:only-child .member { border-radius: calc(var(--radius) - 1px); }
+a.member:hover { background: var(--blue-tint); }
 .member:focus-visible { outline: 3px solid rgba(9, 90, 166, 0.45); outline-offset: -3px; background: var(--blue-tint); }
 .avatar {
   flex: none; width: 42px; height: 42px; border-radius: 50%;
@@ -123,7 +126,36 @@ main.wrap { margin-top: -46px; padding-bottom: 8px; }
   transition: background-color 0.12s ease;
 }
 .donate svg { width: 14px; height: 14px; }
-.member:hover .donate { background: var(--blue-dark); }
+a.member:hover .donate { background: var(--blue-dark); }
+
+.no-page { cursor: default; }
+.no-page .avatar { background: var(--bg); color: var(--muted); border-color: var(--line); }
+.donate-wrap { position: relative; flex: none; }
+.donate-off {
+  border: 0; font-family: inherit; line-height: inherit; cursor: help;
+  background: #e4e8ed; color: #6b7480;
+}
+.donate-off:focus-visible { outline: 3px solid rgba(9, 90, 166, 0.45); outline-offset: 2px; }
+.tip {
+  position: absolute; right: 0; bottom: calc(100% + 10px); z-index: 2;
+  width: max-content; max-width: min(240px, 70vw);
+  padding: 9px 12px; border-radius: 8px;
+  background: var(--ink); color: #fff;
+  font-size: 13px; font-weight: 400; line-height: 1.35; text-align: left;
+  box-shadow: 0 6px 18px rgba(6, 38, 77, 0.22);
+  opacity: 0; visibility: hidden; transform: translateY(4px);
+  transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s;
+  pointer-events: none;
+}
+.tip::after {
+  content: ""; position: absolute; right: 26px; top: 100%;
+  border: 6px solid transparent; border-top-color: var(--ink);
+}
+.donate-off:focus-visible + .tip,
+.tip-open .tip { opacity: 1; visibility: visible; transform: none; }
+@media (hover: hover) {
+  .donate-wrap:hover .tip { opacity: 1; visibility: visible; transform: none; }
+}
 
 .empty {
   margin-top: 12px; padding: 26px 22px; text-align: center;

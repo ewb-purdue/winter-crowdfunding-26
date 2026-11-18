@@ -4,6 +4,7 @@ Usage: python3 -I build.py <members.csv> <assets_out_dir> <out_dir>
 
 members.csv columns: name, team, url
 Every url must be https://support.ewb-usa.org/fundraiser/<digits>. The build stops on any bad row.
+Everyone in roster.csv (name, team) who isn't in members.csv is also listed, with no Donate link.
 """
 import base64
 import csv
@@ -64,9 +65,32 @@ def load_members(path):
     return members
 
 
+def add_roster(members, path):
+    by_name = {m["name"].lower() for m in members}
+    seen = set()
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        for n, row in enumerate(csv.DictReader(f), start=2):
+            name = " ".join((row.get("name") or "").split())
+            team = " ".join((row.get("team") or "").split())
+            if not name:
+                fail(f"roster row {n}: missing name")
+            if team not in TEAM_ORDER:
+                fail(f"roster row {n} ({name}): unknown team '{team}'")
+            if name.lower() in seen:
+                fail(f"roster row {n}: {name} is listed twice")
+            seen.add(name.lower())
+            if name.lower() not in by_name:
+                members.append({"name": name, "team": team, "url": ""})
+    for m in members:
+        if m["url"] and m["name"].lower() not in seen:
+            print(f"Note: {m['name']} is in members.csv but not roster.csv")
+
+
 def main():
     csv_path, assets, out = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
     members = load_members(csv_path)
+    with_page = len(members)
+    add_roster(members, HERE / "roster.csv")
 
     style = (HERE / "style.css").read_text(encoding="utf-8")
     members_js = json.dumps(members, ensure_ascii=False).replace("</", "<\\/")
@@ -94,7 +118,7 @@ def main():
     (out / "index.html").write_text(html, encoding="utf-8")
     shutil.copy(assets / "preview.png", out / "preview.png")
     teams = sorted({m["team"] for m in members}, key=TEAM_ORDER.index)
-    print(f"Built {out / 'index.html'} ({len(html) // 1024} KB) with {len(members)} members across {len(teams)} teams")
+    print(f"Built {out / 'index.html'} ({len(html) // 1024} KB) with {len(members)} members ({with_page} with pages) across {len(teams)} teams")
 
 
 if __name__ == "__main__":
